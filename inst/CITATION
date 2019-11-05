@@ -1,0 +1,24 @@
+citHeader("To cite qtl2pleio in publications use:")
+
+citEntry(entry="article",
+         title = "Testing pleiotropy vs. separate QTL in multiparental populations",
+         author = personList(person(c("Frederick", "J."), "Boehm"),
+                             person(c("Elissa", "J."), "Chesler"),
+                             person(c("Brian", "S."), "Yandell"),
+                             person(c("Karl", "W."), "Broman")),
+         journal = "G3",
+         year = 2019,
+         volume = 9,
+         issue = 7,
+         url = "https://www.g3journal.org/content/9/7/2317",
+         eprint = "https://www.g3journal.org/content/ggg/9/7/2317.full.pdf",
+         key = "Boehm2019testing",
+
+         textVersion =
+             paste("Boehm FJ, Chesler EJ, Yandell BS, Broman KW",
+                   "(2019) Testing pleiotropy vs. separate QTL in multiparental populations", " G3 ",
+                   "https://www.g3journal.org/content/9/7/2317")
+         )
+
+
+
