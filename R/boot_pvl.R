@@ -1,18 +1,18 @@
 #' Perform bootstrap sampling and calculate test statistics for each bootstrap sample
 #'
-#' Create a bootstrap sample, perform multivariate QTL scan, and calculate LRT statistic
+#' Create a bootstrap sample, perform multivariate QTL scan, and calculate log10 LRT statistic
 #'
 #' Performs a parametric bootstrap method to calibrate test statistic values in the test of
 #' pleiotropy vs. separate QTL. It begins by inferring parameter values at
 #' the `pleio_peak_index` index value in the object `probs`. It then uses
 #' these inferred parameter values in sampling from a multivariate normal
-#' distribution. For each of the `nboot_per_job` sampled phenotype vectors, a two-dimensional QTL
+#' distribution. For each of the `nboot` sampled phenotype vectors, a two-dimensional QTL
 #' scan, starting at the marker indexed by `start_snp` within the object
 #' `probs` and extending for a total of `n_snp` consecutive markers. The
-#' two-dimensional scan is performed via the function `scan_pvl`. For each
-#' two-dimensional scan, a likelihood ratio test statistic is calculated. The
-#' outputted object is a vector of `nboot_per_job` likelihood ratio test
-#' statistics from `nboot_per_job` distinct bootstrap samples.
+#' two-dimensional scan is performed via the function `scan_pvl_clean`. For each
+#' two-dimensional scan, a log10 likelihood ratio test statistic is calculated. The
+#' outputted object is a vector of `nboot` log10 likelihood ratio test
+#' statistics from `nboot` distinct bootstrap samples.
 #'
 #' @param probs founder allele probabilities three-dimensional array for one chromosome only (not a list)
 #' @param pheno n by d matrix of phenotypes
@@ -21,10 +21,9 @@
 #' @param start_snp positive integer indicating index within probs for start of scan
 #' @param n_snp number of (consecutive) markers to use in scan
 #' @param pleio_peak_index positive integer index indicating genotype matrix for bootstrap sampling. Typically acquired by using `find_pleio_peak_tib`.
-#' @param nboot_per_job number of bootstrap samples to acquire per function invocation
+#' @param nboot number of bootstrap samples to acquire and scan
 #' @param max_iter maximum number of iterations for EM algorithm
 #' @param max_prec stepwise precision for EM algorithm. EM stops once incremental difference in log likelihood is less than max_prec
-#' @param n_cores number of cores to use when calling `scan_pvl`
 #' @export
 #' @importFrom stats var
 #' @references Knott SA, Haley CS (2000) Multitrait
@@ -36,31 +35,18 @@
 #' Genet. Res. 71: 171–180.
 #' @examples
 #'
-## define probs
-#'probs_pre <- rbinom(n = 100 * 10, size = 1, prob = 1 / 2)
-#'probs <- array(data = probs_pre, dim = c(100, 1, 10))
-#'s_id <- paste0('s', 1:100)
-#'rownames(probs) <- s_id
-#'colnames(probs) <- 'A'
-#'dimnames(probs)[[3]] <- paste0('Marker', 1:10)
-#'# define Y
-#'set.seed(2018-12-29)
-#'Y_pre <- runif(200)
-#'Y <- matrix(data = Y_pre, nrow = 100)
-#'rownames(Y) <- s_id
-#'colnames(Y) <- paste0('t', 1:2)
-#'addcovar <- matrix(c(runif(99), NA), nrow = 100, ncol = 1)
-#'rownames(addcovar) <- s_id
-#'colnames(addcovar) <- 'c1'
-#'kin <- diag(100)
-#'rownames(kin) <- s_id
-#'colnames(kin) <- s_id
-#'Y2 <- Y
-#'Y2[1, 2] <- NA
-#'boot_pvl(probs = probs, pheno = Y, kinship = kin,
-#'         start_snp = 1, n_snp = 10, pleio_peak_index = 10, nboot_per_job = 1)
-#'boot_pvl(probs = probs, pheno = Y2, kinship = kin,
-#'         start_snp = 1, n_snp = 10, pleio_peak_index = 10, nboot_per_job = 2)
+#' n <- 50
+#' pheno <- matrix(rnorm(2 * n), ncol = 2)
+#' rownames(pheno) <- paste0("s", 1:n)
+#' colnames(pheno) <- paste0("tr", 1:2)
+#' probs <- array(dim = c(n, 2, 5))
+#' probs[ , 1, ] <- rbinom(n * 5, size = 1, prob = 0.2)
+#' probs[ , 2, ] <- 1 - probs[ , 1, ]
+#' rownames(probs) <- paste0("s", 1:n)
+#' colnames(probs) <- LETTERS[1:2]
+#' dimnames(probs)[[3]] <- paste0("m", 1:5)
+#' boot_pvl(probs = probs, pheno = pheno,
+#'         start_snp = 1, n_snp = 5, pleio_peak_index = 3, nboot = 1)
 #'
 #'
 #' @return numeric vector of (log) likelihood ratio test statistics from `nboot_per_job` bootstrap samples
@@ -72,10 +58,9 @@ boot_pvl <- function(probs,
                      start_snp = 1,
                      n_snp,
                      pleio_peak_index,
-                     nboot_per_job = 1,
+                     nboot = 1,
                      max_iter = 1e+04,
-                     max_prec = 1 / 1e+08,
-                     n_cores = 1
+                     max_prec = 1 / 1e+08
                      )
     {
     if (is.null(probs)) stop("probs is NULL")
@@ -124,6 +109,7 @@ boot_pvl <- function(probs,
         addcovar <- subset_input(input = addcovar, id2keep = id2keep)
         subjects_cov <- check_missingness(addcovar)
         id2keep <- intersect(id2keep, subjects_cov)
+        addcovar <- subset_input(addcovar, id2keep)
     }
     # Send messages if there are two or fewer subjects
     if (length(id2keep) == 0) {stop("no individuals common to all inputs")}
@@ -155,12 +141,12 @@ boot_pvl <- function(probs,
         Vg <- cc_out$Vg
         Ve <- cc_out$Ve
         # define Sigma
-        Sigma <- calc_Sigma(Vg, Ve, kinship)
+        Sigma <- calc_Sigma(Vg = Vg, Ve = Ve, kinship = kinship)
     }
     if (is.null(kinship)) {
         # get Sigma for Haley Knott regression without random effect
         Ve <- var(pheno) # get d by d covar matrix
-        Sigma <- calc_Sigma(Vg = NULL, Ve = Ve)
+        Sigma <- calc_Sigma(Vg = NULL, Ve = Ve, kinship = NULL, n_mouse = nrow(pheno))
     }
     Sigma_inv <- solve(Sigma)
     # calc Bhat
@@ -168,29 +154,34 @@ boot_pvl <- function(probs,
                          Sigma_inv = Sigma_inv,
                          Y = as.vector(as.matrix(pheno))
     )
-    B <- matrix(data = Bcol, nrow = f_size, ncol = d_size, byrow = FALSE)
-    # Start loop
-    lrt <- numeric()
-    for (i in 1:nboot_per_job) {
-        foo <- sim1(X = X, B = B, Vg = Vg, Ve = Ve, kinship = kinship)
+    B <- matrix(data = Bcol, nrow = ncol(Xpre), ncol = d_size, byrow = FALSE)
+    # Start loop to get Ysim matrices
+    Ysimlist <- list()
+    for (i in 1:nboot) {
+        foo <- sim1(X = X, B = B, Sigma = Sigma)
         Ysim <- matrix(foo, ncol = d_size, byrow = FALSE)
         rownames(Ysim) <- rownames(pheno)
         colnames(Ysim) <- paste0("t", 1:d_size)
-        scan_out <- scan_pvl(probs = probs,
-                           pheno = Ysim,
-                           addcovar = addcovar,
-                           kinship = kinship,
-                           start_snp = start_snp,
-                           n_snp = n_snp,
-                           max_iter = max_iter,
-                           max_prec = max_prec,
-                           n_cores = n_cores
-                           )
-        lrt[i] <- scan_out %>%
+        Ysimlist[[i]] <- Ysim
+    }
+    # prepare table of marker indices for each call of scan_pvl_clean
+    mytab <- prep_mytab(d_size = d_size, n_snp = n_snp)
+
+    scan_out <- furrr::future_map(.x = Ysimlist,
+                                   .f = scan_pvl_clean,
+                                   probs = probs,
+                                   addcovar = addcovar,
+                                   Sigma_inv = Sigma_inv,
+                                   Sigma = Sigma,
+                                   start_snp = start_snp,
+                                   mytab = mytab,
+                                   n_snp = n_snp
+                                   )
+    lrt <- furrr::future_map_dbl(.x = scan_out, .f = function(x){
+        x %>%
             calc_profile_lods() %>%
             dplyr::select(profile_lod) %>%
             max()
-
-    }
+    })
     return(lrt)
 }

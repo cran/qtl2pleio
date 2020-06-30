@@ -4,9 +4,18 @@
 \alias{boot_pvl}
 \title{Perform bootstrap sampling and calculate test statistics for each bootstrap sample}
 \usage{
-boot_pvl(probs, pheno, addcovar = NULL, kinship = NULL,
-  start_snp = 1, n_snp, pleio_peak_index, nboot_per_job = 1,
-  max_iter = 10000, max_prec = 1/1e+08, n_cores = 1)
+boot_pvl(
+  probs,
+  pheno,
+  addcovar = NULL,
+  kinship = NULL,
+  start_snp = 1,
+  n_snp,
+  pleio_peak_index,
+  nboot = 1,
+  max_iter = 10000,
+  max_prec = 1/1e+08
+)
 }
 \arguments{
 \item{probs}{founder allele probabilities three-dimensional array for one chromosome only (not a list)}
@@ -23,59 +32,45 @@ boot_pvl(probs, pheno, addcovar = NULL, kinship = NULL,
 
 \item{pleio_peak_index}{positive integer index indicating genotype matrix for bootstrap sampling. Typically acquired by using `find_pleio_peak_tib`.}
 
-\item{nboot_per_job}{number of bootstrap samples to acquire per function invocation}
+\item{nboot}{number of bootstrap samples to acquire and scan}
 
 \item{max_iter}{maximum number of iterations for EM algorithm}
 
 \item{max_prec}{stepwise precision for EM algorithm. EM stops once incremental difference in log likelihood is less than max_prec}
-
-\item{n_cores}{number of cores to use when calling `scan_pvl`}
 }
 \value{
 numeric vector of (log) likelihood ratio test statistics from `nboot_per_job` bootstrap samples
 }
 \description{
-Create a bootstrap sample, perform multivariate QTL scan, and calculate LRT statistic
+Create a bootstrap sample, perform multivariate QTL scan, and calculate log10 LRT statistic
 }
 \details{
 Performs a parametric bootstrap method to calibrate test statistic values in the test of
 pleiotropy vs. separate QTL. It begins by inferring parameter values at
 the `pleio_peak_index` index value in the object `probs`. It then uses
 these inferred parameter values in sampling from a multivariate normal
-distribution. For each of the `nboot_per_job` sampled phenotype vectors, a two-dimensional QTL
+distribution. For each of the `nboot` sampled phenotype vectors, a two-dimensional QTL
 scan, starting at the marker indexed by `start_snp` within the object
 `probs` and extending for a total of `n_snp` consecutive markers. The
-two-dimensional scan is performed via the function `scan_pvl`. For each
-two-dimensional scan, a likelihood ratio test statistic is calculated. The
-outputted object is a vector of `nboot_per_job` likelihood ratio test
-statistics from `nboot_per_job` distinct bootstrap samples.
+two-dimensional scan is performed via the function `scan_pvl_clean`. For each
+two-dimensional scan, a log10 likelihood ratio test statistic is calculated. The
+outputted object is a vector of `nboot` log10 likelihood ratio test
+statistics from `nboot` distinct bootstrap samples.
 }
 \examples{
 
-probs_pre <- rbinom(n = 100 * 10, size = 1, prob = 1 / 2)
-probs <- array(data = probs_pre, dim = c(100, 1, 10))
-s_id <- paste0('s', 1:100)
-rownames(probs) <- s_id
-colnames(probs) <- 'A'
-dimnames(probs)[[3]] <- paste0('Marker', 1:10)
-# define Y
-set.seed(2018-12-29)
-Y_pre <- runif(200)
-Y <- matrix(data = Y_pre, nrow = 100)
-rownames(Y) <- s_id
-colnames(Y) <- paste0('t', 1:2)
-addcovar <- matrix(c(runif(99), NA), nrow = 100, ncol = 1)
-rownames(addcovar) <- s_id
-colnames(addcovar) <- 'c1'
-kin <- diag(100)
-rownames(kin) <- s_id
-colnames(kin) <- s_id
-Y2 <- Y
-Y2[1, 2] <- NA
-boot_pvl(probs = probs, pheno = Y, kinship = kin,
-        start_snp = 1, n_snp = 10, pleio_peak_index = 10, nboot_per_job = 1)
-boot_pvl(probs = probs, pheno = Y2, kinship = kin,
-        start_snp = 1, n_snp = 10, pleio_peak_index = 10, nboot_per_job = 2)
+n <- 50
+pheno <- matrix(rnorm(2 * n), ncol = 2)
+rownames(pheno) <- paste0("s", 1:n)
+colnames(pheno) <- paste0("tr", 1:2)
+probs <- array(dim = c(n, 2, 5))
+probs[ , 1, ] <- rbinom(n * 5, size = 1, prob = 0.2)
+probs[ , 2, ] <- 1 - probs[ , 1, ]
+rownames(probs) <- paste0("s", 1:n)
+colnames(probs) <- LETTERS[1:2]
+dimnames(probs)[[3]] <- paste0("m", 1:5)
+boot_pvl(probs = probs, pheno = pheno,
+        start_snp = 1, n_snp = 5, pleio_peak_index = 3, nboot = 1)
 
 
 }

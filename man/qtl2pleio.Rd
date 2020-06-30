@@ -3,8 +3,7 @@
 \docType{package}
 \name{qtl2pleio}
 \alias{qtl2pleio}
-\alias{qtl2pleio-package}
 \title{qtl2pleio.}
 \description{
-qtl2pleio.
+Testing pleiotropy vs. separate QTL in multiparental populations
 }
