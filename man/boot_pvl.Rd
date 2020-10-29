@@ -2,7 +2,7 @@
 % Please edit documentation in R/boot_pvl.R
 \name{boot_pvl}
 \alias{boot_pvl}
-\title{Perform bootstrap sampling and calculate test statistics for each bootstrap sample}
+\title{Perform bootstrap sampling and calculate test statistic for each bootstrap sample}
 \usage{
 boot_pvl(
   probs,
@@ -14,7 +14,8 @@ boot_pvl(
   pleio_peak_index,
   nboot = 1,
   max_iter = 10000,
-  max_prec = 1/1e+08
+  max_prec = 1/1e+08,
+  cores = 1
 )
 }
 \arguments{
@@ -37,6 +38,8 @@ boot_pvl(
 \item{max_iter}{maximum number of iterations for EM algorithm}
 
 \item{max_prec}{stepwise precision for EM algorithm. EM stops once incremental difference in log likelihood is less than max_prec}
+
+\item{cores}{number of cores to use when calling mclapply to parallelize the bootstrap analysis.}
 }
 \value{
 numeric vector of (log) likelihood ratio test statistics from `nboot_per_job` bootstrap samples
@@ -70,7 +73,7 @@ rownames(probs) <- paste0("s", 1:n)
 colnames(probs) <- LETTERS[1:2]
 dimnames(probs)[[3]] <- paste0("m", 1:5)
 boot_pvl(probs = probs, pheno = pheno,
-        start_snp = 1, n_snp = 5, pleio_peak_index = 3, nboot = 1)
+        start_snp = 1, n_snp = 5, pleio_peak_index = 3, nboot = 1, cores = 1)
 
 
 }
