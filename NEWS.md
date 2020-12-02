@@ -1,3 +1,29 @@
+# qtl2pleio 1.4.3
+
+## Major changes
+
+* None
+
+## Minor changes
+
+* Updated RcppExports.cpp and deleted C++ test files that aren't used.
+
+
+
+
+
+# qtl2pleio 1.4.2.9000
+
+## Major changes
+
+* added function `convert_to_scan1_output` to convert multivariate, one-QTL lods to output format of `qtl2::scan1`, for use in `qtl2::bayes_int`.
+
+## Minor changes
+
+* None
+
+
+
 # qtl2pleio 1.4.1
 
 ## Major changes

@@ -1,7 +1,7 @@
 Type: Package
 Package: qtl2pleio
 Title: Testing Pleiotropy in Multiparental Populations
-Version: 1.4.1
+Version: 1.4.3
 Authors@R: 
     person(given = "Frederick J",
            family = "Boehm",
@@ -22,15 +22,15 @@ Imports: dplyr, gemma2, ggplot2, magrittr, MASS, Rcpp, rlang, tibble,
         parallel
 Suggests: covr, mvtnorm, knitr, rmarkdown, testthat, broman, devtools,
         qtl2, parallelly
-LinkingTo: Rcpp, testthat, RcppEigen
+LinkingTo: Rcpp, RcppEigen
 Encoding: UTF-8
 Language: en-US
 LazyData: true
 NeedsCompilation: yes
 RoxygenNote: 7.1.1
 VignetteBuilder: knitr
-Packaged: 2020-10-29 16:01:43 UTC; fred
+Packaged: 2020-12-01 21:53:16 UTC; fred
 Author: Frederick J Boehm [aut, cre] (<https://orcid.org/0000-0002-1644-5931>)
 Maintainer: Frederick J Boehm <frederick.boehm@gmail.com>
 Repository: CRAN
-Date/Publication: 2020-10-29 16:50:03 UTC
+Date/Publication: 2020-12-02 22:50:02 UTC
