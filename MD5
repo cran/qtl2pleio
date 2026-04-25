@@ -1,7 +1,7 @@
-fda965becb62f01b4d08a2c355271eb3 *DESCRIPTION
+1cbf6b92b236be30faee05359f2d570b *DESCRIPTION
 87aca8b4e0f026ee8203d231f6f05136 *LICENSE
 dd456d5e8c4e1b6415670f2ddd6f9ca6 *NAMESPACE
-c913239200900a12690190cbb14b9ed5 *NEWS.md
+88a682ee86ceb82d2c87554bb38020e6 *NEWS.md
 8add172a092a1b902c4595200a049604 *R/RcppExports.R
 5f194102d3f7bf628fd18c46d31dd81e *R/boot_pvl.R
 5089d62eb852fd7aff9cc25f7afb5987 *R/calc_Bhat.R
@@ -17,7 +17,7 @@ bf7b85f9100213138dedc93d70171229 *R/fit1_pvl.R
 b8eb7edaa51c2ee6323d6b4177a381b9 *R/plot_pvl.R
 b71e445c69d77592250e81bf480f6d57 *R/prep_mytab.R
 7a62676cb1023f6b325cbdaba7c6fb25 *R/process_inputs.R
-91acf66e53b6723395c0aad90055f4c2 *R/qtl2pleio-package.r
+16dadd269528c1e4bfe02333a497e12c *R/qtl2pleio-package.r
 0fe64f6e6b5bba182e3f0e048217d05e *R/rcpp_calc_Bhat.R
 12759dd937aff722df49accf80ce6a12 *R/rcpp_log_dmvnorm2.R
 1b0cd9963948a81511cfc09036eb4f88 *R/scan_multi_onechr.R
@@ -25,12 +25,8 @@ d6ec8ac84648bce88146734225b72149 *R/scan_pvl.R
 8d05702945beaf78d5ed9ccfacd27e15 *R/sim1.R
 f0c20c7600bd59c15d77991462f8e2df *R/utils-pipe.R
 5f9895f2a6d2d3cfe9c2ed44f16b4280 *R/utils.R
-732cff2cce7fff7df740e6ce3a2232db *README.md
-653d9ba6e8dd33c065e8daa7cb32d76a *build/vignette.rds
-f4ed551a71806b9c1418aaae94e16ce8 *inst/CITATION
-a6988b2137fbb2edb4e690157aaf9ddb *inst/doc/bootstrap-cluster.R
-181ee2798099edca964934abd37d50db *inst/doc/bootstrap-cluster.Rmd
-c813b50a02ac6dbb67071dbb39a5f6a1 *inst/doc/bootstrap-cluster.html
+163a0b4b3e98d38f3436a00f7cbd3139 *README.md
+cb5f7a1a1c20023ec9d53620a95366d6 *inst/CITATION
 450595a6468546261e68f21cf3a11edf *man/add_pmap.Rd
 f8172b249c5dec98a4b30cbaa80d6aa3 *man/boot_pvl.Rd
 c312774627d8a57a07866fed96ef52d0 *man/calc_Bhat.Rd
@@ -43,8 +39,8 @@ c8ffd0638f697475b0cb66984fc17bd6 *man/calc_sqrt_mat.Rd
 8978e4d11b88d9fbd0a066968490b703 *man/check_identical.Rd
 d6c7249ac5c85dbbdd0350d2f96e2e26 *man/check_missingness.Rd
 fd4f2c3096bf32e0d4e022e255dc35d2 *man/convert_to_scan1_output.Rd
-65bd15c4bdd4b3a2d52342bf2928b041 *man/figures/README-1d-lod-plots-1.png
-811205589fbf3a127e7943357a1f2b91 *man/figures/README-profile-plot-1.png
+a9c5740f1e897fc2a4973fec3a4ff166 *man/figures/README-1d-lod-plots-1.png
+7581fa1ce1173632323b1ba21cec0c58 *man/figures/README-profile-plot-1.png
 e62ff07f7ef0b25f2fd523e106c2f44d *man/find_pleio_peak_tib.Rd
 73d9ed46db93ca712f2b64aac9cd05a4 *man/fit1_pvl.Rd
 6fdc9c0b127834cf023714650815a293 *man/get_effects.Rd
@@ -54,7 +50,7 @@ e44d217ec6f80d51b54d7e58e44d0ae4 *man/make_id2keep.Rd
 ffb5721af3d266fa9b033e75a3581742 *man/prep_X_list.Rd
 25e0860ea18eddd471377123f0f80b50 *man/prep_mytab.Rd
 30dd52c61dac70e3944d30fc7cae7091 *man/process_inputs.Rd
-9dcb4e3f8b82fc98523525ee6dccda88 *man/qtl2pleio.Rd
+d083fd3891427862213099f63a3122ec *man/qtl2pleio-package.Rd
 a688eaf94b32deba73b17d5978b44901 *man/rcpp_calc_Bhat.Rd
 e574ac8b66b91332f333de9a668c30fb *man/rcpp_calc_Bhat2.Rd
 9dc53ef706eb15998ccbc9744c18532a *man/rcpp_log_dmvnorm2.Rd
@@ -67,7 +63,7 @@ e574ac8b66b91332f333de9a668c30fb *man/rcpp_calc_Bhat2.Rd
 9282820f5a5786510d152118987c2124 *man/subset_kinship.Rd
 a224768505a2f17177213d3b81922d2c *src/RcppExports.cpp
 bac91a370aad045e34e3b56789ccc8c8 *src/eigen_sqrt.cpp
-b64b87dbb5b6560bc7f6df822acc8ec3 *src/matrix.cpp
+1c60c9a5f1e35c327f7445b5db26702b *src/matrix.cpp
 88ad5e69679c55a6c5c81b084e868894 *src/matrix.h
 dece7fd85d261a5c853348f2348cbf07 *src/rcpp_ols.cpp
 98e1ddf0d51dffad4167ac1463c97308 *src/rcppeigen.cpp
@@ -86,5 +82,3 @@ a83e2032e7438ed1d190709f4352a0e9 *tests/testthat/test-prep_mytab.R
 80d6429f9f018cf1b47c8b70401ae768 *tests/testthat/test-scan_pvl.R
 eef82ef586d03af7f83cbad5b66add14 *tests/testthat/test-sim1.R
 1ce0a8b7a60b78d0fed079877f0d06f7 *tests/testthat/test-subset_input.R
-181ee2798099edca964934abd37d50db *vignettes/bootstrap-cluster.Rmd
-e57ab86c9379ac0f14fb561578b96954 *vignettes/qtl2pleio.bib
